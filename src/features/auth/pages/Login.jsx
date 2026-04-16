@@ -80,7 +80,9 @@ const Login = () => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    mode: 'onChange',
+  });
 
   let handleFormSumbit = (data) => {
     console.log(data);
@@ -98,7 +100,11 @@ const Login = () => {
         </p>
       </header>
 
-      <form onSubmit={handleSubmit(handleFormSumbit)} className="mb-5 mt-10 space-y-6">
+      <form
+        noValidate
+        onSubmit={handleSubmit(handleFormSumbit)}
+        className="mb-5 mt-10 space-y-6"
+      >
         <Input
           id="email"
           type="email"
@@ -110,6 +116,10 @@ const Login = () => {
           error={errors.email?.message}
           {...register('email', {
             required: 'Email is required',
+            pattern: {
+              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              message: 'Please enter a valid email address',
+            },
           })}
         />
 
