@@ -1,7 +1,9 @@
-import React from 'react';
+
 import Input from '../../../shared/components/Input';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router';
+import { useAuthContext } from '../../../shared/hooks/UseContext';
+import { nanoid } from 'nanoid';
 
 const VERSION = 'v4.8.2-enterprise';
 
@@ -81,6 +83,9 @@ const GlobeIcon = () => (
 );
 
 const Register = () => {
+  
+let {registerAdmins, setRegisterAdmins} = useAuthContext();
+
   let {
     register,
     handleSubmit,
@@ -92,7 +97,10 @@ const Register = () => {
 
   // Runs when register form is submitted successfully
   let handleFormSumbit = (data) => {
-    console.log(data);
+    // Naye admin ko purane admins ke saath add kar rahe hain.
+    // localStorage ka sync AuthContext ke useEffect se ho jayega.
+    let newAdmin = [...registerAdmins, { id: nanoid(), ...data }];
+    setRegisterAdmins(newAdmin);
     reset();
   };
 

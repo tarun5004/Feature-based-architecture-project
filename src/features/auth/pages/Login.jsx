@@ -1,6 +1,9 @@
 import React from 'react';
 import Input from '../../../shared/components/Input';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router';
+import { useAuthContext } from '../../../shared/hooks/UseContext';
+import { toast } from 'react-toastify';
 
 const VERSION = 'v4.8.2-enterprise';
 
@@ -75,6 +78,10 @@ const GlobeIcon = () => (
 );
 
 const Login = () => {
+  const navigate = useNavigate();
+  // Context se registered admins list aur login setter le rahe hain.
+  // Pehle yahan naming mismatch tha: registerAdmin vs registerAdmins.
+  let { registerAdmins, setLogin } = useAuthContext();
   let {
     register,
     handleSubmit,
@@ -84,9 +91,38 @@ const Login = () => {
     mode: 'onChange',
   });
 
+
+
   let handleFormSumbit = (data) => {
+    // Email + password match karke registered admin find kar rahe hain.
+    let admin = registerAdmins.find(
+      (elem) => elem.email === data.email && elem.password === data.password
+    );
+    if(!admin){
+      toast.error('Invalid email or password', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      return;
+    }
+
+    // Valid admin mil gaya to usko context me login state me set kar do.
+    // localStorage sync AuthContext automatically handle karega.
+    setLogin(admin);
+
+    // Success case me user ko feedback dena aur next page par bhejna better hai.
+    // Isse clear ho jata hai ki login successful ho gaya.
+    toast.success('Login successful');
+
     console.log(data);
     reset();
+    navigate('/dashboard');
   };
 
   return (
@@ -161,7 +197,9 @@ const Login = () => {
 
       <p>
         Don&apos;t have an account{' '}
-        <span className="cursor-pointer text-blue-700">Register Here</span>
+        <span onClick={() => navigate('/register')} className="cursor-pointer text-blue-700">
+          Register Here
+        </span>
       </p>
 
       <footer className="mt-10 border-t border-slate-200 pt-6">
