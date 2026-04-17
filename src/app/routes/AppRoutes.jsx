@@ -5,13 +5,21 @@ import Login from '../../features/auth/pages/Login';
 import Register from '../../features/auth/pages/Register';
 import DashBoardLayout from '../layouts/DashBoardLayout';
 import HomePage from '../../features/dashboard/pages/HomePage';
+import ProtactedRoutes from './ProtactedRoutes';
+import PublicRoutes from './PublicRoutes';
+import EmployeePage from '../../features/dashboard/pages/EmployeePage';
+import  RegstrationPage  from '../../features/dashboard/pages/RegstrationPage';
 
 
 const AppRoutes = () => {
     let router = createBrowserRouter ([
         {
             path: '/',
-            element: <AuthLayout />,
+            element: <PublicRoutes />,
+            children: [
+                {
+                    path: '',
+                    element: <AuthLayout />,
             children: [
                 {
                     path: '',
@@ -22,14 +30,31 @@ const AppRoutes = () => {
                     element: <Register />,
                 }
             ]
+                }
+            ]
         },
         {
             path: '/dashboard',
-            element: <DashBoardLayout />,
+            element: <ProtactedRoutes />,
+            children: [
+                {
+                    path: '',
+                    element: <DashBoardLayout />,
             children: [
                 {
                     path: '',
                     element: <HomePage />,
+                },
+                                {
+                    path: 'employees',
+                    element: <EmployeePage />,
+                },
+                                {
+                    path: 'registration',
+                    element: <RegstrationPage />,
+                },
+
+            ]
                 }
             ]
         }

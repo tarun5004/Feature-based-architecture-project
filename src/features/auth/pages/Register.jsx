@@ -1,9 +1,7 @@
 
 import Input from '../../../shared/components/Input';
-import { useForm } from 'react-hook-form';
 import { Link } from 'react-router';
-import { useAuthContext } from '../../../shared/hooks/UseContext';
-import { nanoid } from 'nanoid';
+import useAuth from '../hooks/UseAuth';
 
 const VERSION = 'v4.8.2-enterprise';
 
@@ -83,26 +81,16 @@ const GlobeIcon = () => (
 );
 
 const Register = () => {
-  
-let {registerAdmins, setRegisterAdmins} = useAuthContext();
-
-  let {
+  // Register page ki sari auth logic useAuth hook se aa rahi hai.
+  const {
     register,
     handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
-    mode: 'onChange',
-  });
-
-  // Runs when register form is submitted successfully
-  let handleFormSumbit = (data) => {
-    // Naye admin ko purane admins ke saath add kar rahe hain.
-    // localStorage ka sync AuthContext ke useEffect se ho jayega.
-    let newAdmin = [...registerAdmins, { id: nanoid(), ...data }];
-    setRegisterAdmins(newAdmin);
-    reset();
-  };
+    errors,
+    fullNameRules,
+    emailRules,
+    passwordRules,
+    onSubmit,
+  } = useAuth('register');
 
   return (
     <>
@@ -119,7 +107,7 @@ let {registerAdmins, setRegisterAdmins} = useAuthContext();
       {/* Register form fields */}
       <form
         noValidate
-        onSubmit={handleSubmit(handleFormSumbit)}
+        onSubmit={handleSubmit(onSubmit)}
         className="mb-5 mt-10 space-y-6"
       >
         <Input
@@ -131,13 +119,7 @@ let {registerAdmins, setRegisterAdmins} = useAuthContext();
           icon={<UserIcon />}
           autoComplete="name"
           error={errors.fullName?.message}
-          {...register('fullName', {
-            required: 'Name is required',
-            minLength: {
-              value: 3,
-              message: 'Name must be at least 3 characters',
-            },
-          })}
+          {...register('fullName', fullNameRules)}
         />
 
         <Input
@@ -149,13 +131,7 @@ let {registerAdmins, setRegisterAdmins} = useAuthContext();
           icon={<UserIcon />}
           autoComplete="email"
           error={errors.email?.message}
-          {...register('email', {
-            required: 'Email is required',
-            pattern: {
-              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              message: 'Please enter a valid email address',
-            },
-          })}
+          {...register('email', emailRules)}
         />
 
         <Input
@@ -168,13 +144,7 @@ let {registerAdmins, setRegisterAdmins} = useAuthContext();
           icon={<LockIcon />}
           autoComplete="new-password"
           inputClassName="tracking-[0.18em] placeholder:tracking-[0.18em]"
-          {...register('password', {
-            required: 'Password is required',
-            minLength: {
-              value: 6,
-              message: 'Password must be at least 6 characters',
-            },
-          })}
+          {...register('password', passwordRules)}
         />
 
         <button

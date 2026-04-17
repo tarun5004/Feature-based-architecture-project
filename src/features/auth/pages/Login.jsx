@@ -1,9 +1,6 @@
 import React from 'react';
 import Input from '../../../shared/components/Input';
-import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router';
-import { useAuthContext } from '../../../shared/hooks/UseContext';
-import { toast } from 'react-toastify';
+import useAuth from '../hooks/UseAuth';
 
 const VERSION = 'v4.8.2-enterprise';
 
@@ -78,52 +75,16 @@ const GlobeIcon = () => (
 );
 
 const Login = () => {
-  const navigate = useNavigate();
-  // Context se registered admins list aur login setter le rahe hain.
-  // Pehle yahan naming mismatch tha: registerAdmin vs registerAdmins.
-  let { registerAdmins, setLogin } = useAuthContext();
-  let {
+  // Login page ki sari auth logic useAuth hook se aa rahi hai.
+  const {
     register,
     handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
-    mode: 'onChange',
-  });
-
-
-
-  let handleFormSumbit = (data) => {
-    // Email + password match karke registered admin find kar rahe hain.
-    let admin = registerAdmins.find(
-      (elem) => elem.email === data.email && elem.password === data.password
-    );
-    if(!admin){
-      toast.error('Invalid email or password', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-      return;
-    }
-
-    // Valid admin mil gaya to usko context me login state me set kar do.
-    // localStorage sync AuthContext automatically handle karega.
-    setLogin(admin);
-
-    // Success case me user ko feedback dena aur next page par bhejna better hai.
-    // Isse clear ho jata hai ki login successful ho gaya.
-    toast.success('Login successful');
-
-    console.log(data);
-    reset();
-    navigate('/dashboard');
-  };
+    errors,
+    emailRules,
+    passwordRules,
+    onSubmit,
+    goToRegister,
+  } = useAuth('login');
 
   return (
     <>
@@ -138,7 +99,7 @@ const Login = () => {
 
       <form
         noValidate
-        onSubmit={handleSubmit(handleFormSumbit)}
+        onSubmit={handleSubmit(onSubmit)}
         className="mb-5 mt-10 space-y-6"
       >
         <Input
@@ -150,13 +111,7 @@ const Login = () => {
           icon={<UserIcon />}
           autoComplete="email"
           error={errors.email?.message}
-          {...register('email', {
-            required: 'Email is required',
-            pattern: {
-              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              message: 'Please enter a valid email address',
-            },
-          })}
+          {...register('email', emailRules)}
         />
 
         <Input
@@ -169,13 +124,7 @@ const Login = () => {
           icon={<LockIcon />}
           autoComplete="current-password"
           inputClassName="tracking-[0.18em] placeholder:tracking-[0.18em]"
-          {...register('password', {
-            required: 'Password is required',
-            minLength: {
-              value: 6,
-              message: 'Password must be at least 6 characters',
-            },
-          })}
+          {...register('password', passwordRules)}
           action={
             <button
               type="button"
@@ -197,7 +146,7 @@ const Login = () => {
 
       <p>
         Don&apos;t have an account{' '}
-        <span onClick={() => navigate('/register')} className="cursor-pointer text-blue-700">
+        <span onClick={goToRegister} className="cursor-pointer text-blue-700">
           Register Here
         </span>
       </p>

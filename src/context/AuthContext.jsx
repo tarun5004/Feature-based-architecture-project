@@ -16,7 +16,8 @@ export let AuthProvider = ({ children }) => {
     );
 
     // Logged-in admin ek single object hota hai, array nahi.
-    const [login, setLogin] = useState(
+    // Naam ko loginAdmin rakha hai taaki hook aur route guards me same naming use ho.
+    const [loginAdmin, setLoginAdmin] = useState(
         () => storage.get(LOGIN_ADMIN_KEY) || null
     );
 
@@ -28,21 +29,21 @@ export let AuthProvider = ({ children }) => {
     // Jab bhi logged-in admin change ho, usko localStorage me sync kar do.
     // Null aaye to key remove kar denge taaki stale login data na rahe.
     useEffect(() => {
-        if (login) {
-            storage.set(LOGIN_ADMIN_KEY, login);
+        if (loginAdmin) {
+            storage.set(LOGIN_ADMIN_KEY, loginAdmin);
             return;
         }
 
         storage.remove(LOGIN_ADMIN_KEY);
-    }, [login]);
+    }, [loginAdmin]);
 
 
     return (
         <AuthContext.Provider value= {{ 
             registerAdmins,
             setRegisterAdmins,
-            login,
-            setLogin
+            loginAdmin,
+            setLoginAdmin
         }} > 
         
         {children}
