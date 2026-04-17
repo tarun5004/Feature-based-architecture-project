@@ -8,7 +8,7 @@ import HomePage from '../../features/dashboard/pages/HomePage';
 import ProtactedRoutes from './ProtactedRoutes';
 import PublicRoutes from './PublicRoutes';
 import EmployeePage from '../../features/dashboard/pages/EmployeePage';
-import  RegstrationPage  from '../../features/dashboard/pages/RegstrationPage';
+import RegistrationPage from '../../features/registration/pages/RegistrationPage';
 
 
 const AppRoutes = () => {
@@ -51,7 +51,7 @@ const AppRoutes = () => {
                 },
                                 {
                     path: 'registration',
-                    element: <RegstrationPage />,
+                    element: <RegistrationPage />,
                 },
 
             ]
