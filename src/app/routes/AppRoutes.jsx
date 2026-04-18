@@ -7,7 +7,7 @@ import DashBoardLayout from '../layouts/DashBoardLayout';
 import HomePage from '../../features/dashboard/pages/HomePage';
 import ProtactedRoutes from './ProtactedRoutes';
 import PublicRoutes from './PublicRoutes';
-import EmployeePage from '../../features/dashboard/pages/EmployeePage';
+import EmployeePage from '../../features/employee/pages/EmployeePage';
 import RegistrationPage from '../../features/registration/pages/RegistrationPage';
 
 
